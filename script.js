@@ -169,7 +169,7 @@
     },
     {
       threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px',
+      rootMargin: '0px 0px -20px 0px',
     }
   );
 
@@ -186,6 +186,18 @@
   });
 
   elements.forEach(el => observer.observe(el));
+
+  // Fallback: after layout is complete, force-reveal any elements
+  // that are already in the viewport (above-the-fold content).
+  requestAnimationFrame(() => {
+    elements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add('visible');
+        observer.unobserve(el);
+      }
+    });
+  });
 })();
 
 
